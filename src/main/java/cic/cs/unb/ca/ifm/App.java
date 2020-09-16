@@ -33,7 +33,7 @@ public class App {
 		
 		EventQueue.invokeLater(() -> {
             try {
-                init();
+                init();	//系统初始化
                 new MainFrame();
             } catch (Exception e) {
 				logger.debug(e.getMessage());
