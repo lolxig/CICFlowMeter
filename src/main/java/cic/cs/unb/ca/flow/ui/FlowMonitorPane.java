@@ -57,7 +57,7 @@ public class FlowMonitorPane extends JPanel {
 
     private ExecutorService csvWriterThread;
 
-
+    //在线处理pane
     public FlowMonitorPane() {
         init();
 
@@ -75,52 +75,53 @@ public class FlowMonitorPane extends JPanel {
         csvWriterThread.shutdown();
     }
 
-    private JPanel initCenterPane(){
+    private JPanel initCenterPane() {
         JPanel pane = new JPanel();
         pane.setLayout(new BorderLayout(0, 0));
-        pane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        pane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,initFlowPane(), initNWifsPane());
-        splitPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        //初始化流窗口与操作窗口，水平切分成两个窗口
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, initFlowPane(), initNWifsPane());
+        splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         splitPane.setOneTouchExpandable(true);
         splitPane.setResizeWeight(1.0);
 
-        pane.add(splitPane,BorderLayout.CENTER);
+        pane.add(splitPane, BorderLayout.CENTER);
         return pane;
     }
 
+    //初始化流窗口
     private JPanel initFlowPane() {
+
         JPanel pane = new JPanel();
         pane.setLayout(new BorderLayout(0, 5));
         pane.setBorder(BorderFactory.createLineBorder(new Color(0x555555)));
 
-        //pane.add(initTableBtnPane(), BorderLayout.NORTH);
+//        pane.add(initTableBtnPane(), BorderLayout.NORTH);
         pane.add(initTablePane(), BorderLayout.CENTER);
         pane.add(initStatusPane(), BorderLayout.SOUTH);
 
         return pane;
     }
 
+    //初始化表格窗口
     private JPanel initTablePane() {
         JPanel pane = new JPanel();
         pane.setLayout(new BorderLayout(0, 0));
-        pane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        pane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-
-        String[] arrayHeader = StringUtils.split(FlowFeature.getHeader(), ",");
-        defaultTableModel = new DefaultTableModel(arrayHeader,0);
+        String[] arrayHeader = StringUtils.split(FlowFeature.getHeader(), ","); //得到表头，初始的表头有84个
+        defaultTableModel = new DefaultTableModel(arrayHeader, 0);  //设置表头标签
         flowTable = new JTable(defaultTableModel);
         flowTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         JScrollPane scrollPane = new JScrollPane(flowTable);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-
-        pane.add(scrollPane,BorderLayout.CENTER);
-
+        pane.add(scrollPane, BorderLayout.CENTER);
         return pane;
     }
 
-    private JPanel initTableBtnPane(){
+    private JPanel initTableBtnPane() {
         JPanel btnPane = new JPanel();
         btnPane.setLayout(new BoxLayout(btnPane, BoxLayout.X_AXIS));
         btnSave = new JButton("Save as");
@@ -181,12 +182,13 @@ public class FlowMonitorPane extends JPanel {
         return btnPane;
     }
 
+    //流窗口状态信息栏
     private JPanel initStatusPane() {
         JPanel pane = new JPanel();
         pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
-        lblStatus = new JLabel("Get ready");
+        lblStatus = new JLabel("Get ready");    //初始化信息
         lblStatus.setForeground(SystemColor.desktop);
-        lblFlowCnt = new JLabel("0");
+        lblFlowCnt = new JLabel("0");   //初始化数据包为0
 
         pane.add(Box.createHorizontalStrut(5));
         pane.add(lblStatus);
@@ -197,38 +199,39 @@ public class FlowMonitorPane extends JPanel {
         return pane;
     }
 
+    //初始化操作窗口
     private JPanel initNWifsPane() {
         JPanel pane = new JPanel(new BorderLayout(0, 0));
         pane.setBorder(BorderFactory.createLineBorder(new Color(0x555555)));
-        pane.add(initNWifsButtonPane(), BorderLayout.WEST);
-        pane.add(initNWifsListPane(), BorderLayout.CENTER);
+        pane.add(initNWifsButtonPane(), BorderLayout.WEST); //初始化左边的按钮
+        pane.add(initNWifsListPane(), BorderLayout.CENTER); //初始化右边的窗格
 
         return pane;
     }
 
     private JPanel initNWifsButtonPane() {
         JPanel pane = new JPanel();
-        pane.setBorder(BorderFactory.createEmptyBorder(10,15,10,15));
+        pane.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
-        Dimension d = new Dimension(80,48);
+        Dimension d = new Dimension(80, 48);
 
         btnLoad = new JButton("Load");
         btnLoad.setMinimumSize(d);
         btnLoad.setMaximumSize(d);
-        btnLoad.addActionListener(actionEvent -> loadPcapIfs());
+        btnLoad.addActionListener(actionEvent -> loadPcapIfs());    //监听load
 
         btnStart = new JToggleButton("Start");
         btnStart.setMinimumSize(d);
         btnStart.setMaximumSize(d);
-        btnStart.setEnabled(false);
-        btnStart.addActionListener(actionEvent -> startTrafficFlow());
+        btnStart.setEnabled(false); //初始化时，不使能
+        btnStart.addActionListener(actionEvent -> startTrafficFlow());  //监听start
 
         btnStop = new JToggleButton("Stop");
         btnStop.setMinimumSize(d);
         btnStop.setMaximumSize(d);
-        btnStop.setEnabled(false);
-        btnStop.addActionListener(actionEvent -> stopTrafficFlow());
+        btnStop.setEnabled(false);  //初始化时，不使能
+        btnStop.addActionListener(actionEvent -> stopTrafficFlow());    //监听stop
 
         btnGroup = new ButtonGroup();
         btnGroup.add(btnStart);
@@ -248,7 +251,7 @@ public class FlowMonitorPane extends JPanel {
     private JPanel initNWifsListPane() {
         JPanel pane = new JPanel();
         pane.setLayout(new BorderLayout(0, 0));
-        pane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        pane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         listModel = new DefaultListModel<>();
         listModel.addElement(new PcapIfWrapper("Click Load button to load network interfaces"));
@@ -256,12 +259,13 @@ public class FlowMonitorPane extends JPanel {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        pane.add(scrollPane,BorderLayout.CENTER);
+        pane.add(scrollPane, BorderLayout.CENTER);
         return pane;
     }
 
+    //监听load事件，按按钮之后，网卡列表，然后将网卡事件打印出来
     private void loadPcapIfs() {
         LoadPcapInterfaceWorker task = new LoadPcapInterfaceWorker();
         task.addPropertyChangeListener(event -> {
@@ -272,14 +276,14 @@ public class FlowMonitorPane extends JPanel {
                         break;
                     case DONE:
                         try {
-                            java.util.List<PcapIf> ifs = task1.get();
-                            List<PcapIfWrapper> pcapiflist = PcapIfWrapper.fromPcapIf(ifs);
+                            java.util.List<PcapIf> ifs = task1.get();   //获取到网卡列表
+                            List<PcapIfWrapper> pcapiflist = PcapIfWrapper.fromPcapIf(ifs); //转换成自定义网卡列表，加了一个prompt
 
                             listModel.removeAllElements();
-                            for(PcapIfWrapper pcapif :pcapiflist) {
+                            for (PcapIfWrapper pcapif : pcapiflist) {
                                 listModel.addElement(pcapif);
                             }
-                            btnStart.setEnabled(true);
+                            btnStart.setEnabled(true);  //将start按钮设置为使能
                             btnGroup.clearSelection();
 
                             lblStatus.setText("pick one network interface to listening");
@@ -295,10 +299,10 @@ public class FlowMonitorPane extends JPanel {
         task.execute();
     }
 
+    //核心部分，抓取数据并解析
     private void startTrafficFlow() {
 
         String ifName = list.getSelectedValue().name();
-
         if (mWorker != null && !mWorker.isCancelled()) {
             return;
         }
@@ -306,12 +310,12 @@ public class FlowMonitorPane extends JPanel {
         mWorker = new TrafficFlowWorker(ifName);
         mWorker.addPropertyChangeListener(event -> {
             TrafficFlowWorker task = (TrafficFlowWorker) event.getSource();
-            if("progress".equals(event.getPropertyName())){
+            if ("progress".equals(event.getPropertyName())) {
                 lblStatus.setText((String) event.getNewValue());
                 lblStatus.validate();
-            }else if (TrafficFlowWorker.PROPERTY_FLOW.equalsIgnoreCase(event.getPropertyName())) {
+            } else if (TrafficFlowWorker.PROPERTY_FLOW.equalsIgnoreCase(event.getPropertyName())) {
                 insertFlow((BasicFlow) event.getNewValue());
-            }else if ("state".equals(event.getPropertyName())) {
+            } else if ("state".equals(event.getPropertyName())) {
                 switch (task.getState()) {
                     case STARTED:
                         break;
@@ -319,14 +323,14 @@ public class FlowMonitorPane extends JPanel {
                         try {
                             lblStatus.setText(task.get());
                             lblStatus.validate();
-                        } catch(CancellationException e){
+                        } catch (CancellationException e) {
 
                             lblStatus.setText("stop listening");
                             lblStatus.setForeground(SystemColor.GRAY);
                             lblStatus.validate();
                             logger.info("Pcap stop listening");
 
-                        }catch (InterruptedException | ExecutionException e) {
+                        } catch (InterruptedException | ExecutionException e) {
                             logger.debug(e.getMessage());
                         }
                         break;
@@ -353,13 +357,13 @@ public class FlowMonitorPane extends JPanel {
         String path = FlowMgr.getInstance().getAutoSaveFile();
         logger.info("path:{}", path);
 
-        if(defaultTableModel.getRowCount()>0 && new File(path).exists()) {
+        if (defaultTableModel.getRowCount() > 0 && new File(path).exists()) {
             StringBuilder msg = new StringBuilder("The flow has been saved to :");
             msg.append(Sys.LINE_SEP);
             msg.append(path);
 
-            UIManager.put("OptionPane.minimumSize",new Dimension(0, 0));
-            JOptionPane.showMessageDialog(this.getParent(),msg.toString());
+            UIManager.put("OptionPane.minimumSize", new Dimension(0, 0));
+            JOptionPane.showMessageDialog(this.getParent(), msg.toString());
         }
     }
 
@@ -371,13 +375,13 @@ public class FlowMonitorPane extends JPanel {
         flowDataList.add(StringUtils.split(flowDump, ","));
 
         //write flows to csv file
-        String header  = FlowFeature.getHeader();
+        String header = FlowFeature.getHeader();
         String path = FlowMgr.getInstance().getSavePath();
         String filename = LocalDate.now().toString() + FlowMgr.FLOW_SUFFIX;
         csvWriterThread.execute(new InsertCsvRow(header, flowStringList, path, filename));
 
         //insert flows to JTable
-        SwingUtilities.invokeLater(new InsertTableRow(defaultTableModel,flowDataList,lblFlowCnt));
+        SwingUtilities.invokeLater(new InsertTableRow(defaultTableModel, flowDataList, lblFlowCnt));
         btnSave.setEnabled(true);
     }
 }

@@ -10,18 +10,21 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+    maven {
+        url "https://maven.aliyun.com/repository/public"
+    }
     mavenLocal()
     mavenCentral()
     maven { url "https://clojars.org/repo" }
 }
 dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
-    compile group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.7.25'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
 //    compile group: 'org.jnetpcap', name: 'jnetpcap', version:'1.4.1'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.6'
-    compile group: 'org.apache.commons', name: 'commons-math3', version:'3.5'
-    compile group: 'commons-io', name: 'commons-io', version:'2.5'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version:'3.6.14'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.5'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.6.14'
     // https://mvnrepository.com/artifact/org.jfree/jfreechart
     compile group: 'org.jfree', name: 'jfreechart', version: '1.5.0'
     // https://mvnrepository.com/artifact/com.google.guava/guava
@@ -32,7 +35,7 @@ dependencies {
     compile 'jnetpcap:jnetpcap:1.4.r1425-1g'
 
 
-    compile group: 'junit', name: 'junit', version:'4.12'
+    compile group: 'junit', name: 'junit', version: '4.12'
 }
 sourceSets {
     main {
@@ -43,18 +46,18 @@ sourceSets {
     }
 }
 
-task zipSrc(type: Zip){
+task zipSrc(type: Zip) {
     baseName "${applicationName}-Source"
     destinationDir = file('build/')
-    from('.'){
+    from('.') {
         include '**/'
-        exclude '.gradle/','build/','bin/','logs/','*.iml','*.ipr','*.iws','.idea/','out/','data/'
+        exclude '.gradle/', 'build/', 'bin/', 'logs/', '*.iml', '*.ipr', '*.iws', '.idea/', 'out/', 'data/'
         into "${applicationName}V${version}-Src"
     }
 }
 
-import org.apache.tools.ant.DirectoryScanner
-task zipPro(type: Zip){
+//import org.apache.tools.ant.DirectoryScanner
+task zipPro(type: Zip) {
 
     doFirst {
         DirectoryScanner.defaultExcludes.each { DirectoryScanner.removeDefaultExclude it }
@@ -68,9 +71,9 @@ task zipPro(type: Zip){
     baseName "${applicationName}-Full"
     destinationDir = file('build/')
 
-    from('.'){
+    from('.') {
         include '**/'
-        exclude '.gradle/','build/','bin/','logs/','*.iml','*.ipr','*.iws','.idea/','out/','data/',".git/"
+        exclude '.gradle/', 'build/', 'bin/', 'logs/', '*.iml', '*.ipr', '*.iws', '.idea/', 'out/', 'data/', ".git/"
         into "${applicationName}V${version}"
     }
 }
@@ -98,25 +101,24 @@ task fatJar(type: Jar) {
 task execute(type: JavaExec) {
     println 'type JavaExec'
 
-
     main = "cic.cs.unb.ca.ifm.App" //main class
     classpath = sourceSets.main.runtimeClasspath
     String osName = System.getProperty('os.name').toLowerCase()
-    if(osName.contains('windows')){
+    if (osName.contains('windows')) {
         jvmArgs '-Djava.library.path=jnetpcap/win/jnetpcap-1.4.r1425'
-    }else{
+    } else {
         jvmArgs '-Djava.library.path=jnetpcap/linux/jnetpcap-1.4.r1425'
     }
 }
 
 
-task exeCMD(type: JavaExec){
+task exeCMD(type: JavaExec) {
     main = "cic.cs.unb.ca.ifm.Cmd" //main class
     classpath = sourceSets.main.runtimeClasspath
     String osName = System.getProperty('os.name').toLowerCase()
-    if(osName.contains('windows')){
+    if (osName.contains('windows')) {
         jvmArgs '-Djava.library.path=jnetpcap/win/jnetpcap-1.4.r1425'
-    }else{
+    } else {
         jvmArgs '-Djava.library.path=jnetpcap/linux/jnetpcap-1.4.r1425'
     }
     //args = ["/home/yzhang29/0a/Capture/", "/home/yzhang29/0a/Capture/out/"]
@@ -150,10 +152,10 @@ applicationDistribution.from("jnetpcap/win/jnetpcap-1.4.r1425") {
     include "*.dll"
     into('lib/native')
 }
-applicationDistribution.from('LICENSE.txt'){
+applicationDistribution.from('LICENSE.txt') {
     into('')
 }
-applicationDistribution.from('ReadMe.txt'){
+applicationDistribution.from('ReadMe.txt') {
     into('')
-    rename("ReadMe.txt","README.md")
+    rename("ReadMe.txt", "README.md")
 }
