@@ -28,7 +28,7 @@ public class FlowMgr {
 
     public FlowMgr init() {
 
-        String rootPath = System.getProperty("user.dir");
+        String rootPath = System.getProperty("user.dir");   //指向当前工程的根目录
 		StringBuilder sb = new StringBuilder(rootPath);
 		sb.append(Sys.FILE_SEP).append("data").append(Sys.FILE_SEP);
 
