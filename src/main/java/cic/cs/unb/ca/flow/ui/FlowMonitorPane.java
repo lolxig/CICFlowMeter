@@ -35,7 +35,6 @@ import java.util.concurrent.Executors;
 public class FlowMonitorPane extends JPanel {
     protected static final Logger logger = LoggerFactory.getLogger(FlowMonitorPane.class);
 
-
     private JTable flowTable;
     private DefaultTableModel defaultTableModel;
     private JList<PcapIfWrapper> list;
@@ -199,7 +198,7 @@ public class FlowMonitorPane extends JPanel {
         return pane;
     }
 
-    //初始化操作窗口
+    //初始化操作窗口，主要是三个按钮和一个状态信息面板
     private JPanel initNWifsPane() {
         JPanel pane = new JPanel(new BorderLayout(0, 0));
         pane.setBorder(BorderFactory.createLineBorder(new Color(0x555555)));
@@ -209,6 +208,7 @@ public class FlowMonitorPane extends JPanel {
         return pane;
     }
 
+    //初始化三个按钮面板
     private JPanel initNWifsButtonPane() {
         JPanel pane = new JPanel();
         pane.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
@@ -225,7 +225,7 @@ public class FlowMonitorPane extends JPanel {
         btnStart.setMinimumSize(d);
         btnStart.setMaximumSize(d);
         btnStart.setEnabled(false); //初始化时，不使能
-        btnStart.addActionListener(actionEvent -> startTrafficFlow());  //监听start
+        btnStart.addActionListener(actionEvent -> startTrafficFlow());  //监听start（主要）
 
         btnStop = new JToggleButton("Stop");
         btnStop.setMinimumSize(d);
@@ -302,8 +302,8 @@ public class FlowMonitorPane extends JPanel {
     //核心部分，抓取数据并解析
     private void startTrafficFlow() {
 
-        String ifName = list.getSelectedValue().name();
-        if (mWorker != null && !mWorker.isCancelled()) {
+        String ifName = list.getSelectedValue().name(); //获取选择的网卡的值
+        if (mWorker != null && !mWorker.isCancelled()) {    //检查worker
             return;
         }
 

@@ -21,7 +21,7 @@ public class TrafficFlowWorker extends SwingWorker<String, String> implements Fl
 
     public TrafficFlowWorker(String device) {
         super();
-        this.device = device;
+        this.device = device;   //传入网卡设备的名称
     }
 
     @Override
@@ -29,16 +29,17 @@ public class TrafficFlowWorker extends SwingWorker<String, String> implements Fl
 
         FlowGenerator flowGen = new FlowGenerator(true, 120000000L, 5000000L);
         flowGen.addFlowListener(this);
-        int snaplen = 64 * 1024;//2048; // Truncate packet at this size
-        int promiscous = Pcap.MODE_PROMISCUOUS;
-        int timeout = 60 * 1000; // In milliseconds
+        int snaplen = 64 * 1024;//2048; // Truncate packet at this size  //包的最大大小为64K
+        int promiscous = Pcap.MODE_PROMISCUOUS; //设置网卡为混杂模式，接收所有流过该网卡的包，而不管目标地址是否是该地址
+        int timeout = 60 * 1000; // In milliseconds  //超时时间为6s
         StringBuilder errbuf = new StringBuilder();
-        Pcap pcap = Pcap.openLive(device, snaplen, promiscous, timeout, errbuf);
-        if (pcap == null) {
+        Pcap pcap = Pcap.openLive(device, snaplen, promiscous, timeout, errbuf);    //开启网卡监听
+        if (pcap == null) { //如果开启监听失败，打印失败信息
             logger.info("open {} fail -> {}", device, errbuf.toString());
             return String.format("open %s fail ->", device) + errbuf.toString();
         }
 
+        //new一个handler接口，并加载其函数
         PcapPacketHandler<String> jpacketHandler = (packet, user) -> {
 
             /*
@@ -55,9 +56,9 @@ public class TrafficFlowWorker extends SwingWorker<String, String> implements Fl
              */
 
             PcapPacket permanent = new PcapPacket(Type.POINTER);
-            packet.transferStateAndDataTo(permanent);
+            packet.transferStateAndDataTo(permanent);   //将缓冲区的数据包放入到permanent中
 
-            flowGen.addPacket(PacketReader.getBasicPacketInfo(permanent, true, false));
+            flowGen.addPacket(PacketReader.getBasicPacketInfo(permanent, true, false)); //读取IPV4数据包，并将读取到的数据存入到数据分析流中
             if (isCancelled()) {
                 pcap.breakloop();
                 logger.debug("break Packet loop");

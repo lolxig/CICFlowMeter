@@ -37,14 +37,15 @@ dependencies {
 
     compile group: 'junit', name: 'junit', version: '4.12'
 }
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-            exclude '**/CICFlowMeter.java'
-        }
-    }
-}
+
+//sourceSets {
+//    main {
+//        java {
+//            srcDir 'src'
+//            exclude '**/CICFlowMeter.java'
+//        }
+//    }
+//}
 
 task zipSrc(type: Zip) {
     baseName "${applicationName}-Source"
