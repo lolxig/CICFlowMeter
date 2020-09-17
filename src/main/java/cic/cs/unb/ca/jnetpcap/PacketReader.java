@@ -297,7 +297,7 @@ public class PacketReader {
                 packetInfo = getIpv6Info(packet, protocol);
             }
         } else if (readIP6) {
-            packetInfo = getIpv6Info(packet, protocol);
+            packetInfo = getIpv6Info(packet, protocol);		//分解IPV4数据包头部
             if (packetInfo == null) {
                 packetInfo = getIpv4Info(packet, protocol);
             }
@@ -326,7 +326,7 @@ public class PacketReader {
                 } else if (readIP6) {
                     packet.scan(protocol.getIpv6().getId());
                     packetInfo = getIpv6Info(packet, protocol);
-                    if (packetInfo == null && readIP4) {
+                    if (packetInfo == null) {
                         packet.scan(protocol.getIpv4().getId());
                         packetInfo = getIpv4Info(packet, protocol);
                     }
@@ -401,21 +401,21 @@ public class PacketReader {
         try {
             if (packet.hasHeader(protocol.getIpv4())) {
                 packetInfo = new BasicPacketInfo(idGen);	//生成一个新id
-                packetInfo.setSrc(protocol.getIpv4().source());
-                packetInfo.setDst(protocol.getIpv4().destination());
+                packetInfo.setSrc(protocol.getIpv4().source());	//设置源IP
+                packetInfo.setDst(protocol.getIpv4().destination());	//设置目标IP
                 //packetInfo.setTimeStamp(packet.getCaptureHeader().timestampInMillis());
-                packetInfo.setTimeStamp(packet.getCaptureHeader().timestampInMicros());
+                packetInfo.setTimeStamp(packet.getCaptureHeader().timestampInMicros());	//设置时间戳
 				
 				/*if(this.firstPacket == 0L)
 					this.firstPacket = packet.getCaptureHeader().timestampInMillis();
 				this.lastPacket = packet.getCaptureHeader().timestampInMillis();*/
 
-                if (packet.hasHeader(protocol.getTcp())) {
-                    packetInfo.setTCPWindow(protocol.getTcp().window());
+                if (packet.hasHeader(protocol.getTcp())) {	//解析TCP包
+                    packetInfo.setTCPWindow(protocol.getTcp().window());	//设置端口
                     packetInfo.setSrcPort(protocol.getTcp().source());
                     packetInfo.setDstPort(protocol.getTcp().destination());
-                    packetInfo.setProtocol(6);
-                    packetInfo.setFlagFIN(protocol.getTcp().flags_FIN());
+                    packetInfo.setProtocol(6);	//TCP协议号为6
+                    packetInfo.setFlagFIN(protocol.getTcp().flags_FIN());	//设置各个标志位
                     packetInfo.setFlagPSH(protocol.getTcp().flags_PSH());
                     packetInfo.setFlagURG(protocol.getTcp().flags_URG());
                     packetInfo.setFlagSYN(protocol.getTcp().flags_SYN());
@@ -424,14 +424,14 @@ public class PacketReader {
                     packetInfo.setFlagCWR(protocol.getTcp().flags_CWR());
                     packetInfo.setFlagRST(protocol.getTcp().flags_RST());
                     packetInfo.setPayloadBytes(protocol.getTcp().getPayloadLength());
-                    packetInfo.setHeaderBytes(protocol.getTcp().getHeaderLength());
-                } else if (packet.hasHeader(protocol.getUdp())) {
+                    packetInfo.setHeaderBytes(protocol.getTcp().getHeaderLength());	//设置首部长度
+                } else if (packet.hasHeader(protocol.getUdp())) {//解析UDP包
                     packetInfo.setSrcPort(protocol.getUdp().source());
                     packetInfo.setDstPort(protocol.getUdp().destination());
                     packetInfo.setPayloadBytes(protocol.getUdp().getPayloadLength());
                     packetInfo.setHeaderBytes(protocol.getUdp().getHeaderLength());
-                    packetInfo.setProtocol(17);
-                } else {
+                    packetInfo.setProtocol(17);	//UDP协议号为17
+                } else {	//如果都不是
                     int headerCount = packet.getHeaderCount();
                     for (int i = 0; i < headerCount; i++) {
                         JHeader header = JHeaderPool.getDefault().getHeader(i);

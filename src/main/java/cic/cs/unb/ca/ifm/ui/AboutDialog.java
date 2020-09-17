@@ -45,7 +45,7 @@ public class AboutDialog {
     }
 
     public static void show(JFrame parent) {
-
+        //打印版权信息
         ImageIcon icon;
         if (parent != null) {
             //URL url = parent.getClass().getClassLoader().getResource("cicaboutlogo.png");

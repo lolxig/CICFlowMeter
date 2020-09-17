@@ -67,7 +67,7 @@ public class FlowGenerator {
         mListener = listener;
     }
 
-    public void addPacket(BasicPacketInfo packet) {
+    public void addPacket(BasicPacketInfo packet) { //将解析的数据包继续解析成流数据
         if (packet == null) {
             return;
         }
@@ -89,7 +89,7 @@ public class FlowGenerator {
             // 1.- we move the flow to finished flow list
             // 2.- we eliminate the flow from the current flow list
             // 3.- we create a new flow with the packet-in-process
-            if ((currentTimestamp - flow.getFlowStartTime()) > flowTimeOut) {
+            if ((currentTimestamp - flow.getFlowStartTime()) > flowTimeOut) {   //设置超时时间
                 if (flow.packetCount() > 1) {
                     if (mListener != null) {
                         mListener.onFlowGenerated(flow);

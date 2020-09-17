@@ -307,11 +307,11 @@ public class FlowMonitorPane extends JPanel {
             return;
         }
 
-        mWorker = new TrafficFlowWorker(ifName);
-        mWorker.addPropertyChangeListener(event -> {
+        mWorker = new TrafficFlowWorker(ifName);        //根据网卡名称新建worker
+        mWorker.addPropertyChangeListener(event -> {    //添加一个配置监听器
             TrafficFlowWorker task = (TrafficFlowWorker) event.getSource();
             if ("progress".equals(event.getPropertyName())) {
-                lblStatus.setText((String) event.getNewValue());
+                lblStatus.setText((String) event.getNewValue());    //将抓取到的包展示出来
                 lblStatus.validate();
             } else if (TrafficFlowWorker.PROPERTY_FLOW.equalsIgnoreCase(event.getPropertyName())) {
                 insertFlow((BasicFlow) event.getNewValue());
