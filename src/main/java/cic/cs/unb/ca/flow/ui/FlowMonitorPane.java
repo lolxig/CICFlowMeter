@@ -32,7 +32,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 在线获取流并分析.
+ */
 public class FlowMonitorPane extends JPanel {
+
     protected static final Logger logger = LoggerFactory.getLogger(FlowMonitorPane.class);
 
     private JTable flowTable;
